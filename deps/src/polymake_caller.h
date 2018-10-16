@@ -20,6 +20,9 @@ CreatePolymakeTypeVar(pm_Vector_pm_Integer);
 CreatePolymakeTypeVar(pm_Vector_pm_Rational);
 CreatePolymakeTypeVar(pm_Set_Int64);
 CreatePolymakeTypeVar(pm_Set_Int32);
+CreatePolymakeTypeVar(pm_Array_Int32);
+CreatePolymakeTypeVar(pm_Array_Int64);
+
 
 #define POLYMAKE_INSERT_TYPE_IN_MAP(type) insert_type_in_map(#type , &POLYMAKETYPE_ ## type )
 #define POLYMAKE_INSERT_TYPE_IN_MAP_SINGLE_TEMPLATE(outer,inner) \

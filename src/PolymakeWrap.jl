@@ -44,7 +44,9 @@ polymake_c_types = Array{Any,1}([
    ("pm_Vector_pm_Integer",Polymake.pm_Vector{Polymake.pm_Integer}),
    ("pm_Vector_pm_Rational",Polymake.pm_Vector{Polymake.pm_Rational}),
    ("pm_Set_Int64",Polymake.pm_Set{Int64}),
-   ("pm_Set_Int32",Polymake.pm_Set{Int32})
+   ("pm_Set_Int32",Polymake.pm_Set{Int32}),
+   ("pm_Array_Int32",Polymake.pm_Array{Int32}),
+   ("pm_Array_Int64",Polymake.pm_Array{Int64}),
 ])
 
 function set_types()
@@ -67,6 +69,7 @@ for T in [
     :pm_Matrix,
     :pm_Vector,
     :pm_Set,
+    :pm_Array,
     :exists,
     :new_pm_Integer,
     :application,
@@ -88,12 +91,15 @@ const SmallObject = Union{Polymake.pm_Integer,
                           Polymake.pm_Rational,
                           Polymake.pm_Matrix,
                           Polymake.pm_Vector,
-                          Polymake.pm_Set
+                          Polymake.pm_Set,
+                          Polymake.pm_Array
                           }
 
 include("functions.jl")
 include("convert.jl")
 include("sets.jl")
+include("arrays.jl")
+
 # to be moved to Vectors/Matrices
 pm_Integer(b::BigInt) = new_pm_Integer(b)
 pm_Rational(num::BigInt, den::BigInt) = pm_Rational(pm_Integer(num), pm_Integer(den))

@@ -70,5 +70,6 @@ include("sets.jl")
 include("vectors.jl")
 include("matrices.jl")
 include("arrays.jl")
+# include("generated/includes.jl")
 
 end # of module Polymake

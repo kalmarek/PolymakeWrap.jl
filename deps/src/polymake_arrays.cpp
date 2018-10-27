@@ -25,10 +25,10 @@ void polymake_module_add_array(jlcxx::Module& polymake){
       wrapped.template constructor<int64_t>();
       wrapped.template constructor<int64_t, elemType>();
       
-      wrapped.method("_getindex", [](WrappedT& A, int64_t n){
+      wrapped.method("_getindex", [](const WrappedT& A, int64_t n){
         return elemType(A[static_cast<long>(n) - 1]);
       });
-      wrapped.method("_setindex!",[](WrappedT& A, elemType val, int64_t n){
+      wrapped.method("_setindex!",[](WrappedT& A, const elemType& val, int64_t n){
           A[static_cast<long>(n) - 1] = val;
       });
       wrapped.method("length", &WrappedT::size);
@@ -45,11 +45,11 @@ void polymake_module_add_array(jlcxx::Module& polymake){
         A.append(B);
         return A;
       });
-      wrapped.method("fill!", [](WrappedT& A, elemType& x){
+      wrapped.method("fill!", [](WrappedT& A, const elemType& x){
         A.fill(x);
         return A;
       });
-      wrapped.method("show_small_obj", [](WrappedT& A){
+      wrapped.method("show_small_obj", [](const WrappedT& A){
         return show_small_object<WrappedT>(A);
       });
     });

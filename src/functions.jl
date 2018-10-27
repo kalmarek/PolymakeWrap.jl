@@ -54,7 +54,8 @@ const WrappedTypes = Dict(
     Symbol("pm::Array<int>") => to_array_int32,
     Symbol("pm::Array<long>") => to_array_int64,
     Symbol("pm::Array<pm::Set<int, pm::operations::cmp>>") => to_array_set_int32,
-    Symbol("pm::Array<pm::Matrix<pm::Integer>>") => to_array_matrix_Integer, 
+    Symbol("pm::Array<pm::Matrix<pm::Integer>>") => to_array_matrix_Integer,
+    Symbol("pm::Array<std::basic_string<char, std::char_traits<char>, std::allocator<char> >>") => to_array_string,
     Symbol("undefined") => x -> nothing,
 )
 

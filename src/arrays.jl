@@ -6,7 +6,9 @@ pm_Array(n::Integer, elt::T) where T = pm_Array{T}(Int64(n), elt)
 
 function pm_Array(v::AbstractVector{T}) where T 
     arr = pm_Array{T}(length(v))
-    arr .= v
+    @inbounds for i in 1:length(v)
+        arr[i] = v[i]
+    end
     return arr
 end
 

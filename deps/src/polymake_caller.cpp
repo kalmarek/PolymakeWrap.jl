@@ -55,62 +55,46 @@ void polymake_call_function_feed_argument(T& function, jl_value_t* argument)
 #include "generated/to_polymake_function.h"
 }
 
-pm::perl::PropertyValue
-polymake_call_function(std::string                     function_name,
-                       jlcxx::ArrayRef<std::string, 1> template_parameters,
-                       jlcxx::ArrayRef<jl_value_t*, 1> arguments)
-{
-    std::vector<std::string> template_vector(template_parameters.begin(), template_parameters.end());
-    auto   function = polymake::prepare_call_function(function_name, template_vector);
-    for (auto arg : arguments)
-        polymake_call_function_feed_argument(function, arg);
-    return function();
-}
+template <bool VoidContext = false>
+using funcall_type = std::conditional_t<VoidContext,void,pm::perl::PropertyValue>;
 
 // Visualization in polymake only works if the function is called and
 // then immediately released,i.e. not converted to a property value
-void polymake_call_function_void(
+template<bool VoidContext = false>
+auto polymake_call_function(
     std::string                     function_name,
     jlcxx::ArrayRef<std::string, 1> template_parameters,
     jlcxx::ArrayRef<jl_value_t*, 1> arguments)
+    -> funcall_type<VoidContext>
 {
     std::vector<std::string> template_vector(template_parameters.begin(), template_parameters.end());
     auto   function = polymake::prepare_call_function(function_name, template_vector);
     for (auto arg : arguments)
         polymake_call_function_feed_argument(function, arg);
-    function();
-}
-
-pm::perl::PropertyValue
-polymake_call_method(std::string                     function_name,
-                     pm::perl::Object*               object,
-                     jlcxx::ArrayRef<jl_value_t*, 1> arguments)
-{
-    auto   function = object->prepare_call_method(function_name);
-    for (auto arg : arguments)
-        polymake_call_function_feed_argument(function, arg);
-    return function();
+    return static_cast<funcall_type<VoidContext>>(function());
 }
 
 // Visualization in polymake only works if the method is called and
 // then immediately released,i.e. not converted to a property value
-void polymake_call_method_void(std::string                     function_name,
-                               pm::perl::Object                object,
-                               jlcxx::ArrayRef<jl_value_t*, 1> arguments)
+template<bool VoidContext = false>
+auto polymake_call_method(
+    std::string                     function_name,
+    pm::perl::Object*               object,
+    jlcxx::ArrayRef<jl_value_t*, 1> arguments)
+    -> funcall_type<VoidContext>
 {
-    auto   function = object.prepare_call_method(function_name);
+    auto   function = object->prepare_call_method(function_name);
     for (auto arg : arguments)
         polymake_call_function_feed_argument(function, arg);
-    function();
+    return static_cast<funcall_type<VoidContext>>(function());
 }
-
 
 void polymake_module_add_caller(jlcxx::Module& polymake)
 {
-    polymake.method("internal_call_function", &polymake_call_function);
+    polymake.method("internal_call_function", &polymake_call_function<false>);
     polymake.method("internal_call_function_void",
-                    &polymake_call_function_void);
-    polymake.method("internal_call_method", &polymake_call_method);
-    polymake.method("internal_call_method_void", &polymake_call_method_void);
+                    &polymake_call_function<true>);
+    polymake.method("internal_call_method", &polymake_call_method<false>);
+    polymake.method("internal_call_method_void", &polymake_call_method<true>);
     polymake.method("set_julia_type", &set_julia_type);
 }

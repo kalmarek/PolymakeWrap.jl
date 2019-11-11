@@ -20,6 +20,8 @@
 
 #include "polymake_caller.h"
 
+#include "polymake_direct_calls.h"
+
 #include "polymake_type_translations.h"
 
 Polymake_Data data{nullptr, nullptr};
@@ -39,6 +41,8 @@ JLCXX_MODULE define_module_polymake(jlcxx::Module& polymake)
     polymake_module_add_set(polymake);
 
     polymake_module_add_array(polymake);
+
+    polymake_module_add_direct_calls(polymake);
 
     polymake.method("initialize_polymake", &initialize_polymake);
     polymake.method("application", [](const std::string x) {
